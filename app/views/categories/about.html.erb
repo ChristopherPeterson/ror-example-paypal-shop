@@ -1,0 +1,43 @@
+<% title "About & Contact" %>
+<% content_for :nav do %>
+  <% if can?(:update, Category) || can?(:update, Item) || can?(:update, User) || can?(:index, Cart) %>
+  <li class="last_item"><a href="#">ADMIN TOOLS</a>
+    <ul>
+      <% if can?(:index, Cart) %>
+      <li><%= link_to "All Orders".upcase, carts_path %></li>
+      <% end %>
+      <% if can?(:update, User) %>
+      <li><%= link_to "All Users".upcase, users_path %></li>
+      <li><%= link_to "New User".upcase, formatted_new_user_path(:format => "html"), :class => "lightwindow" %></li>
+      <% end %>
+      <% if can? :update, Category %>
+      <li><%= link_to "New Gallery".upcase, formatted_new_category_path(:format => "html"), :class => "lightwindow" %></li>
+      <% end %>
+      <% if can? :update, Item %>
+      <li><%= link_to "New Item".upcase, new_item_path %></li>
+      <% end %>
+    </ul>
+  </li>
+  <% end %>
+<% end %>
+
+<section id="about_description">
+  <header>
+    <h3>ABOUT</h3>
+  </header>
+  <p>
+    Woolen Wonders is a site about my passion for the craft of all things knitted, crochet, fiber and more. I started my wonderful hobby in 2006. My goal, was to crochet a blanket for my niece, which sparked my new found hobby, the rest is history. Please feel free to browse the items in the gallery and store and if you have any questions, please don't hesitate to ask.
+  </p>
+  <p>
+    Sincerely, Alora
+  </p>
+</section>
+
+<section id="contact_description">
+  <header>
+    <h3>EMAIL</h3>
+  </header>
+  <p>
+    info@woolenwonders.com
+  </p>
+</section>

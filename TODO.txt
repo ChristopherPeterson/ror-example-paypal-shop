@@ -1,0 +1,12 @@
+- Add Posts & Comments
+  - allow users not logged in to create comments
+    - require name and email address
+    - Javascript validations
+    - Server side validations
+  - Gravitar plugin
+    - use the email address from guest or logged in user to display gravitar icon next to comment
+  - Add WYSIWYG Editor to posts/_form
+
+- Scrolling
+  - Add scroll wheel to scroll up & down
+  - Add arrow keys to scroll up & down

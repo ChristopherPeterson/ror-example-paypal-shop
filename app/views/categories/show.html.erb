@@ -1,0 +1,106 @@
+<% title @category.name %>
+<% content_for :nav do %>
+  <% if can?(:update, Category) || can?(:update, Item) || can?(:update, User) || can?(:index, Cart) %>
+  <li class="last_item"><a href="#">ADMIN TOOLS</a>
+    <ul>
+      <% if can?(:index, Cart) %>
+      <li><%= link_to "All Orders".upcase, carts_path %></li>
+      <% end %>
+      <% if can?(:update, User) %>
+      <li><%= link_to "All Users".upcase, users_path %></li>
+      <li><%= link_to "New User".upcase, formatted_new_user_path(:format => "html"), :class => "lightwindow" %></li>
+      <% end %>
+      <% if can? :update, Category %>
+      <li><%= link_to "New Gallery".upcase, formatted_new_category_path(:format => "html"), :class => "lightwindow" %></li>
+      <% end %>
+      <% if can? :update, Item %>
+      <li><%= link_to "New Item".upcase, new_item_path %></li>
+      <% end %>
+      <% if can? :update, Category %>
+        <% if @category.enabled.to_i == 0 %>
+          <li>
+          	<span id="<%="category_#{@category.id}_enabled"%>">
+          	  <%= link_to_remote "Publish Gallery".upcase, :url => enable_category_path(@category), :method => :get, :complete => "showHome()" %>
+        	  </span>
+      	  </li>
+    	  <% else %>
+      	  <li>
+          	<span id="<%="category_#{@category.id}_enabled"%>">
+          	  <%= link_to_remote "Unpublish Gallery".upcase, :url => disable_category_path(@category), :method => :get, :complete => "showHome()" %>
+        	  </span>
+      	  </li>
+    	  <% end %>
+        <li><%= link_to "Edit Gallery".upcase, formatted_edit_category_path(@category, :format => "html"), :class => "lightwindow" %></li>
+        <li><%= link_to "Delete Gallery".upcase, @category, :confirm => 'Are you sure?', :method => :delete %></li>
+      <% end %>
+    </ul>
+  </li>
+  <% end %>
+<% end %>
+
+<div class="<%= (can? :update, Category) ? "category" : "category" %>">
+  <h3><%= h(@category.name).upcase %></h3>
+  <% if can?(:update, Category) || can?(:update, Item) %>
+  <span class="desc">
+    <% if can? :update, Item %>
+    <%= content_tag(:p, link_to("New Item".upcase, new_item_path)) %>
+    <% end %>
+    <% if can? :update, Category %>
+      <% if @category.enabled.to_i == 0 %>
+        <p id="<%="category_#{@category.id}_enabled"%>">
+          <%= link_to_remote "Publish Gallery".upcase, :url => enable_category_path(@category), :method => :get, :complete => "showHome()" %>
+        </p>
+      <% else %>
+        <p id="<%="category_#{@category.id}_enabled"%>">
+          <%= link_to_remote "Unpublish Gallery".upcase, :url => disable_category_path(@category), :method => :get, :complete => "showHome()" %>
+        </p>
+      <% end %>
+      <%= content_tag(:p, link_to("Edit Gallery".upcase, formatted_edit_category_path(@category, :format => "html"), :class => "lightwindow")) %>
+      <%= content_tag(:p, link_to("Delete Gallery".upcase, @category, :confirm => 'Are you sure?', :method => :delete)) %>
+    <% end %>
+  </span>
+  <% end %>
+</div>
+
+<ul id="items">
+<% first_item = false %>
+<% for item in @category.items %>
+  <% if can? :read, item %>
+    <% if first_item %>
+  <li id="<%="item_#{item.id}"%>" class="thumbnail">
+    <% else %>
+  <li id="<%="item_#{item.id}"%>" class="thumbnail first_thumb">
+      <% first_item = true %>
+    <% end %>
+    <%= link_to image_tag(item.photo.url(:thumb)), item_path(item) %>
+    <span class="<%= (can? :update, Item) ? "desc movable" : "desc" %>">
+      <%= content_tag(:p, link_to("Ordering Info".upcase, item_path(item))) %>
+      <%= content_tag(:p, link_to("Zoom".upcase, image_path(item.photo.url(:full)), {:class => "lightwindow", :rel => "Gallery[#{@category.name}]"}), {:class => "right"}) %>
+      
+      <% if can? :update, Item %>
+        <% if item.enabled.to_i == 0 %>
+        	<p id="<%="item_#{item.id}_enabled"%>">
+        	  <%= link_to_remote "Publish Item".upcase, :url => enable_item_path(item), :method => :get, :complete => "showHome()" %>
+      	  </p>
+      	  <% else %>
+        	<p id="<%="item_#{item.id}_enabled"%>">
+        	  <%= link_to_remote "Unpublish Item".upcase, :url => disable_item_path(item), :method => :get, :complete => "showHome()" %>
+      	  </p>
+    	  <% end %>
+    	  <%= content_tag(:p, link_to("Edit Item".upcase, edit_item_path(item))) %>
+        <%= content_tag(:p, link_to("Delete Item".upcase, item, :confirm => 'Are you sure?', :method => :delete)) %>
+      <% end %>
+    </span>
+  </li>
+  <% end %>
+<% end %>
+</ul>
+<% if can? :update, Item %>
+  <%= javascript_tag "Position.includeScrollOffsets = true" %>
+  <%= sortable_element("items", 
+  				    				 :url		     => sort_items_path,
+  				    				 :ghosting 	 => false,
+  				    				 :constraint => false,
+      				    		 :scroll     => "'content'", 
+  				    				 :complete   => "showHome()") %>
+<% end %>
