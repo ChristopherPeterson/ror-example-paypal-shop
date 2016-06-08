@@ -1,3 +1,4 @@
+# ror-example-paypal-shop
 This was a project that I did for a client who needed an eCommerce website. 
 
 This Ruby on Rails app was done in version 2.2.2, due to the limitations of the Hosting site. 
